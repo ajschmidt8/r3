@@ -17,14 +17,19 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 
+	"github.com/ajschmidt8/rrr/shared"
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
+
+var UseInteractive bool
 
 // cloneCmd represents the clone command
 var cloneCmd = &cobra.Command{
@@ -37,15 +42,23 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var config shared.ConfigInterface
 		fmt.Println("clone called")
-		repos := []string{"cusignal"}
 		reposDir := "repos"
 		cwd, _ := os.Getwd()
+		ymlBytes, err := ioutil.ReadFile("config.yaml")
+		if err != nil {
+			log.Fatalf("cannot read config.yaml file: %v", err)
+		}
+		err = yaml.Unmarshal(ymlBytes, &config)
+		if err != nil {
+			log.Fatalf("cannot decode config.yaml: %v", err)
+		}
 		scriptPath := path.Join(cwd, "scr.sh")
 		fmt.Printf("scr path %s\n", scriptPath)
 		os.RemoveAll(reposDir)
 
-		for _, v := range repos {
+		for _, v := range config.Repos {
 			fmt.Printf("Cloning %s\n", v)
 			cloneDir := path.Join(cwd, reposDir, v)
 			git.PlainClone(cloneDir, false, &git.CloneOptions{
@@ -63,7 +76,11 @@ to quickly create a Cobra application.`,
 				log.Fatal(err)
 			}
 
-			gitAddCmd := exec.Command("git", "add", "-p")
+			addFlag := "-p"
+			if UseInteractive {
+				addFlag = "-i"
+			}
+			gitAddCmd := exec.Command("git", "add", addFlag)
 			gitAddCmd.Stdout = os.Stdout
 			gitAddCmd.Stdin = os.Stdin
 			gitAddCmd.Stderr = os.Stderr
@@ -84,4 +101,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	cloneCmd.Flags().BoolVarP(&UseInteractive, "interactive", "i", false, `Use "git add -i" instead of "git add -p". Needed when you are adding new, untracked files to repos.`)
 }
