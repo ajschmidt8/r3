@@ -25,15 +25,25 @@ import (
 
 	"github.com/ajschmidt8/rrr/shared"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
 
 var UseInteractive bool
 
-// cloneCmd represents the clone command
-var cloneCmd = &cobra.Command{
-	Use:   "clone",
+func dirExists(path string) (exists bool) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		exists = false
+	} else {
+		exists = true
+	}
+	return
+}
+
+// runCmd represents the clone command
+var runCmd = &cobra.Command{
+	Use:   "run",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -56,16 +66,53 @@ to quickly create a Cobra application.`,
 		}
 		scriptPath := path.Join(cwd, "scr.sh")
 		fmt.Printf("scr path %s\n", scriptPath)
-		os.RemoveAll(reposDir)
 
-		for _, v := range config.Repos {
-			fmt.Printf("Cloning %s\n", v)
-			cloneDir := path.Join(cwd, reposDir, v)
-			git.PlainClone(cloneDir, false, &git.CloneOptions{
-				Progress: os.Stdout,
-				URL:      fmt.Sprintf("https://github.com/rapidsai/%v", v),
-			})
-			os.Chdir(cloneDir)
+		for _, repo := range config.Repos {
+			fmt.Printf("Cloning %s\n", repo)
+			repoDir := path.Join(cwd, reposDir, repo)
+
+			if !dirExists(repoDir) {
+				fmt.Printf("repos dir doesn't exist, cloning %v", config.PR.BaseBranch)
+				_, err := git.PlainClone(repoDir, false, &git.CloneOptions{
+					ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", config.PR.BaseBranch)),
+					Progress:      os.Stdout,
+					URL:           fmt.Sprintf("git@github.com:rapidsai/%v.git", repo),
+				})
+				if err != nil {
+					log.Fatalf("could not clone repo: %v", err)
+				}
+			} else {
+				fmt.Printf("repos dir does exist!")
+				gitRepo, err := git.PlainOpen(repoDir)
+				if err != nil {
+					log.Fatalf("could not open repo: %v", err)
+				}
+				gitTree, err := gitRepo.Worktree()
+				if err != nil {
+					log.Fatalf("could not get worktree: %v", err)
+				}
+				err = gitTree.Checkout(&git.CheckoutOptions{
+					Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", config.PR.BaseBranch)),
+					Force:  true,
+				})
+				if err != nil {
+					log.Fatalf("could not checkout in repo: %v", err)
+				}
+				err = gitTree.Clean(&git.CleanOptions{
+					Dir: true,
+				})
+				if err != nil {
+					log.Fatalf("could not clean repo: %v", err)
+				}
+				err = gitTree.Pull(&git.PullOptions{
+					ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", config.PR.BaseBranch)),
+					SingleBranch:  true,
+				})
+				if !(err == nil || err == git.NoErrAlreadyUpToDate) {
+					log.Fatalf("could not pull repo: %v", err)
+				}
+			}
+			os.Chdir(repoDir)
 
 			scrCmd := exec.Command(scriptPath)
 			scrCmd.Stdout = os.Stdout
@@ -90,16 +137,16 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(cloneCmd)
+	rootCmd.AddCommand(runCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// cloneCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// runCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	cloneCmd.Flags().BoolVarP(&UseInteractive, "interactive", "i", false, `Use "git add -i" instead of "git add -p". Needed when you are adding new, untracked files to repos.`)
+	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	runCmd.Flags().BoolVarP(&UseInteractive, "interactive", "i", false, `Use "git add -i" instead of "git add -p". Needed when you are adding new, untracked files to repos.`)
 }

@@ -37,15 +37,18 @@ rrr auth # Sets GitHub API key used for opening PRs.
 **To Do:**
 
 - [x] Add setting for `git add` `-i` vs `-p` flags (`-i` is necessary for interactively staging files that aren't yet tracked)
-- [ ] Figure out whether to delete existing repos when re-running `rrr run`
-  - Things to think about:
-    - If repos _aren't_ removed first and they have local changes already, what should `rrr` do?
-      - Find command to delete existing local branches & re-checkout default branch?
 - [ ] Make _base_branch_ dynamic - get default branch from cuDF repo
-- [ ] Handle forks
+- [ ] Handle forks (create forks for user if they don't already exist)
 - [ ] Setup global config file (`~/rrr.yaml`) on `rrr init`?
   - Contains GitHub username and GitHub API key
 - [ ] Parallelize cloning of repos (go routine?)
 - [ ] Update all help messages
 - [ ] Add a global flag or config.yaml entry for repo owner (i.e. for testing in forks instead of `rapidsai` org)
   - Will be necessary to use for clones & PRs
+
+- Clone
+- Run script
+- Stage
+- Commit
+- Push
+- PR
