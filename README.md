@@ -23,6 +23,7 @@ rrr run # runs scr.sh script on all repos in repos subdir
 rrr run --push # same as above, but also pushes branches after each commit
 rrr run --prs # same as above, but also opens PRs after each commit (implies --push)
 # use -i flag for interactive (as opposed the default -p for patch) x
+# use -a flag for adding all changes without prompts
 ```
 
 Other commands:
