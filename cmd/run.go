@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -25,8 +26,11 @@ import (
 
 	"github.com/ajschmidt8/rrr/shared"
 	"github.com/go-git/go-git/v5"
+	gitConfig "github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/google/go-github/v34/github"
 	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
 )
 
@@ -67,27 +71,41 @@ to quickly create a Cobra application.`,
 		scriptPath := path.Join(cwd, "scr.sh")
 		fmt.Printf("scr path %s\n", scriptPath)
 
-		for _, repo := range config.Repos {
-			fmt.Printf("Cloning %s\n", repo)
-			repoDir := path.Join(cwd, reposDir, repo)
+		for _, repoName := range config.Repos {
+			var gitTree *git.Worktree
+			var gitRepo *git.Repository
+			fmt.Printf("Cloning %s\n", repoName)
+			repoDir := path.Join(cwd, reposDir, repoName)
 
 			if !dirExists(repoDir) {
 				fmt.Printf("repos dir doesn't exist, cloning %v", config.PR.BaseBranch)
-				_, err := git.PlainClone(repoDir, false, &git.CloneOptions{
+				gitRepo, err = git.PlainClone(repoDir, false, &git.CloneOptions{
 					ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", config.PR.BaseBranch)),
 					Progress:      os.Stdout,
-					URL:           fmt.Sprintf("git@github.com:rapidsai/%v.git", repo),
+					URL:           fmt.Sprintf("git@github.com:rapidsai/%v.git", repoName),
+					RemoteName:    "upstream",
 				})
 				if err != nil {
 					log.Fatalf("could not clone repo: %v", err)
 				}
+				_, err = gitRepo.CreateRemote(&gitConfig.RemoteConfig{
+					Name: "origin",
+					URLs: []string{fmt.Sprintf("git@github.com:ajschmidt8/%v.git", repoName)},
+				})
+				if err != nil {
+					log.Fatalf("could not create remote: %v", err)
+				}
+				gitTree, err = gitRepo.Worktree()
+				if err != nil {
+					log.Fatalf("could not get worktree: %v", err)
+				}
 			} else {
 				fmt.Printf("repos dir does exist!")
-				gitRepo, err := git.PlainOpen(repoDir)
+				gitRepo, err = git.PlainOpen(repoDir)
 				if err != nil {
 					log.Fatalf("could not open repo: %v", err)
 				}
-				gitTree, err := gitRepo.Worktree()
+				gitTree, err = gitRepo.Worktree()
 				if err != nil {
 					log.Fatalf("could not get worktree: %v", err)
 				}
@@ -106,13 +124,26 @@ to quickly create a Cobra application.`,
 				}
 				err = gitTree.Pull(&git.PullOptions{
 					ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", config.PR.BaseBranch)),
-					SingleBranch:  true,
 				})
 				if !(err == nil || err == git.NoErrAlreadyUpToDate) {
 					log.Fatalf("could not pull repo: %v", err)
 				}
 			}
 			os.Chdir(repoDir)
+
+			// No errors are thrown here if the branch does not exist
+			err = gitRepo.Storer.RemoveReference(plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", config.BranchName)))
+			if err != nil {
+				log.Fatalf("could not delete branch: %v", err)
+			}
+			err = gitTree.Checkout(&git.CheckoutOptions{
+				Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", config.BranchName)),
+				Create: true,
+			})
+
+			if err != nil {
+				log.Fatalf("could not checkout branch: %v", err)
+			}
 
 			scrCmd := exec.Command(scriptPath)
 			scrCmd.Stdout = os.Stdout
@@ -132,6 +163,42 @@ to quickly create a Cobra application.`,
 			gitAddCmd.Stdin = os.Stdin
 			gitAddCmd.Stderr = os.Stderr
 			gitAddCmd.Run()
+			gitTree.Commit(config.CommitMsg, &git.CommitOptions{})
+			err = gitRepo.Push(&git.PushOptions{
+				RemoteName: "origin",
+				RefSpecs:   []gitConfig.RefSpec{gitConfig.RefSpec(fmt.Sprintf("refs/heads/%[1]s:refs/heads/%[1]s", config.BranchName))},
+			})
+			if err != nil {
+				log.Fatalf("could not push branch: %v", err)
+			}
+
+			// Open PR
+			ctx := context.Background()
+			ts := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: ""},
+			)
+			tc := oauth2.NewClient(ctx, ts)
+
+			client := github.NewClient(tc)
+			newPR := &github.NewPullRequest{
+				Title:               github.String(config.PR.Title),
+				Head:                github.String(config.BranchName),
+				Base:                github.String(config.PR.BaseBranch),
+				Body:                github.String(config.PR.Body),
+				MaintainerCanModify: github.Bool(config.PR.MaintainersModify),
+			}
+
+			pr, _, err := client.PullRequests.Create(ctx, config.PR.RepoOwner, repoName, newPR)
+			if err != nil {
+				log.Fatalf("could not create PR: %v", err)
+			}
+
+			_, _, err = client.Issues.AddLabelsToIssue(ctx, config.PR.RepoOwner, repoName, pr.GetNumber(), config.PR.Labels)
+			if err != nil {
+				log.Fatalf("could not add labels: %v", err)
+			}
+
+			fmt.Printf("\nPR created: %s\n", pr.GetHTMLURL())
 		}
 	},
 }

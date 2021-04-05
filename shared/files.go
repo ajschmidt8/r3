@@ -10,11 +10,13 @@ echo "rrr is great!" > CHANGELOG.md
 
 type ConfigInterface struct {
 	PR struct {
-		BaseBranch string   `yaml:"base_branch"`
-		Draft      bool     `yaml:"draft"`
-		Title      string   `yaml:"title"`
-		Body       string   `yaml:"body"`
-		Labels     []string `yaml:"labels"`
+		RepoOwner         string   `yaml:"repo_owner"`
+		BaseBranch        string   `yaml:"base_branch"`
+		MaintainersModify bool     `yaml:"maintainers_can_modify"`
+		Draft             bool     `yaml:"draft"`
+		Title             string   `yaml:"title"`
+		Body              string   `yaml:"body"`
+		Labels            []string `yaml:"labels"`
 	} `yaml:"pr"`
 	Repos      []string `yaml:"repos"`
 	BranchName string   `yaml:"branch_name"`
@@ -23,8 +25,10 @@ type ConfigInterface struct {
 
 const Config = `---
 pr:
+  repo_owner: rapidsai
   base_branch: branch-0.19
   draft: false
+  maintainers_can_modify: true
   title: Update CHANGELOG.md
   body: |
     This PR updates the CHANGELOG.md file using the really great rrr tool.
