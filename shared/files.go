@@ -56,5 +56,4 @@ repos:
 #  - dask-cuda
 #  - raft
 #  - rmm
-#  - cumlprims_mg
 `

@@ -23,7 +23,7 @@ rrr run # runs scr.sh script on all repos in repos subdir
 rrr run --push # same as above, but also pushes branches after each commit
 rrr run --prs # same as above, but also opens PRs after each commit (implies --push)
 # use -i flag for interactive (as opposed the default -p for patch) x
-# use -a flag for adding all changes without prompts
+# use -A flag for adding all changes without prompts
 ```
 
 Other commands:
@@ -31,6 +31,10 @@ Other commands:
 ```sh
 rrr push # Pushes local changes to remote
 rrr push --delete # (or -D) Deletes remote branch
+```
+
+```sh
+rrr clone --create-branch # (-b) Creates and checks out
 ```
 
 ```sh
@@ -50,9 +54,6 @@ rrr auth # Sets GitHub API key used for opening PRs.
   - Contains GitHub username and GitHub API key
 - [ ] Parallelize cloning of repos (go routine?)
 - [ ] Update all help messages
-- [ ] Add a global flag or config.yaml entry for repo owner (i.e. for testing in forks instead of `rapidsai` org)
-
-  - Will be necessary to use for clones & PRs
 
 - Handle case where: changes are committed/pushed & PRs are already opened & user needs to push updates without deleting existing branch/PR
 
