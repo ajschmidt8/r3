@@ -9,7 +9,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func PR(title string, repoOwner string, repoName string, baseBranch string, headBranch string, body string, maintainerModify bool, labels []string) {
+func PR(title string, repoOwner string, repoName string, draft bool, baseBranch string, headBranch string, body string, maintainerModify bool, labels []string) {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: ""},
@@ -23,6 +23,7 @@ func PR(title string, repoOwner string, repoName string, baseBranch string, head
 		Head:                github.String(headBranch),
 		Body:                github.String(body),
 		MaintainerCanModify: github.Bool(maintainerModify),
+		Draft:               github.Bool(draft),
 	}
 
 	pr, _, err := client.PullRequests.Create(ctx, repoOwner, repoName, newPR)

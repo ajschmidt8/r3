@@ -86,7 +86,7 @@ to quickly create a Cobra application.`,
 		for _, repoName := range config.Repos {
 			shared.Commit(repoName, config.CommitMsg)
 			shared.Push(repoName, config.BranchName)
-			shared.PR(config.PR.Title, config.PR.RepoOwner, repoName, config.PR.BaseBranch, config.BranchName, config.PR.Body, config.PR.MaintainersModify, config.PR.Labels)
+			shared.PR(config.PR.Title, config.PR.RepoOwner, repoName, config.PR.Draft, config.PR.BaseBranch, config.BranchName, config.PR.Body, config.PR.MaintainersModify, config.PR.Labels)
 		}
 	},
 }
