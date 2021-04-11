@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/spf13/cobra"
 
@@ -52,13 +53,14 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	home, err := homedir.Dir()
+	cobra.CheckErr(err)
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
-		home, err := homedir.Dir()
-		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".rrr" (without extension).
 		viper.AddConfigPath(home)
@@ -70,5 +72,25 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	} else {
+		fmt.Println("no config file found")
+		var (
+			githubUsername string
+			githubToken    string
+		)
+		file, err := os.Create(path.Join(home, ".rrr.yaml"))
+		cobra.CheckErr(err)
+		err = file.Chmod(0644)
+		cobra.CheckErr(err)
+
+		fmt.Print("Enter GitHub username: ")
+		fmt.Scanf("%s", &githubUsername)
+		fmt.Print("Enter GitHub token (used for opening PRs): ")
+		fmt.Scanf("%s", &githubToken)
+
+		viper.Set("gh_username", githubUsername)
+		viper.Set("gh_token", githubToken)
+		viper.WriteConfig()
 	}
+
 }

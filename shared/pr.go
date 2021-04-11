@@ -6,13 +6,14 @@ import (
 	"log"
 
 	"github.com/google/go-github/v34/github"
+	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
 )
 
 func PR(repoName string, repoOwner string, title string, draft bool, baseBranch string, headBranch string, body string, maintainerModify bool, labels []string) {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: ""},
+		&oauth2.Token{AccessToken: viper.GetString("gh_token")},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 

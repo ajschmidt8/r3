@@ -42,16 +42,12 @@ rrr clone --create-branch # (-b) Creates and checks out
 rrr pr # Opens PRs (using config.yaml settings) for any repos that have outstanding changes in their directory
 ```
 
-```sh
-rrr auth # Sets GitHub API key used for opening PRs.
-```
-
 **To Do:**
 
 - [x] Add setting for `git add` `-i` vs `-p` flags (`-i` is necessary for interactively staging files that aren't yet tracked)
 - [ ] Make _base_branch_ dynamic - get default branch from cuDF repo
 - [ ] Handle forks (create forks for user if they don't already exist)
-- [ ] Setup global config file (`~/rrr.yaml`) on `rrr init`?
+- [x] Setup global config file (`~/rrr.yaml`) on `rrr init`?
   - Contains GitHub username and GitHub API key
 - [ ] Parallelize cloning of repos (go routine?)
 - [ ] Update all help messages

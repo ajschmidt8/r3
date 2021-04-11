@@ -9,6 +9,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	gitConfig "github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/spf13/viper"
 )
 
 func dirExists(path string) (exists bool) {
@@ -47,7 +48,7 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 		}
 		_, err = gitRepo.CreateRemote(&gitConfig.RemoteConfig{
 			Name: "origin",
-			URLs: []string{fmt.Sprintf("git@github.com:ajschmidt8/%v.git", repoName)}, // remove hardcoded username here
+			URLs: []string{fmt.Sprintf("git@github.com:%s/%s.git", viper.GetString("gh_username"), repoName)},
 		})
 		if err != nil {
 			log.Fatalf("could not create remote: %v", err)
