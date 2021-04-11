@@ -9,7 +9,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func PR(title string, repoOwner string, repoName string, draft bool, baseBranch string, headBranch string, body string, maintainerModify bool, labels []string) {
+func PR(repoName string, repoOwner string, title string, draft bool, baseBranch string, headBranch string, body string, maintainerModify bool, labels []string) {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: ""},

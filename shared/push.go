@@ -10,7 +10,7 @@ import (
 	gitConfig "github.com/go-git/go-git/v5/config"
 )
 
-func Push(repoName string, headBranchName string) {
+func Push(repoName string, headBranchName string, deleteBranch bool) {
 	reposDir := "repos"
 	cwd, _ := os.Getwd()
 	repoDir := path.Join(cwd, reposDir, repoName)
@@ -18,6 +18,20 @@ func Push(repoName string, headBranchName string) {
 	gitRepo, err := git.PlainOpen(repoDir)
 	if err != nil {
 		log.Fatalf("could not open repo: %v", err)
+	}
+
+	if deleteBranch {
+		gitRemote, err := gitRepo.Remote("origin")
+		if err != nil {
+			log.Fatalf("could not get remote: %v", err)
+		}
+		err = gitRemote.Push(&git.PushOptions{
+			RefSpecs: []gitConfig.RefSpec{gitConfig.RefSpec(":refs/heads/" + headBranchName)},
+		})
+		if err != nil {
+			log.Fatalf("could not delete remote branch: %v", err)
+		}
+		return
 	}
 
 	err = gitRepo.Push(&git.PushOptions{

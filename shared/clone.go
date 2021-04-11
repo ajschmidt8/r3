@@ -64,14 +64,12 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 			log.Fatalf("could not get worktree: %v", err)
 		}
 
-		// ---
-
+		// Check for local reference. Create it if it doesn't exist
 		_, err = gitRepo.Reference(plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", baseBranchName)), false)
 		if err != nil {
-			// log.Fatalf("reference doesn't exist: %v", err)
 			// refs/heads/<localBranchName>
 			localBranchReferenceName := plumbing.NewBranchReferenceName(baseBranchName)
-			// refs/remotes/origin/<remoteBranchName>
+			// refs/remotes/upstream/<remoteBranchName>
 			remoteReferenceName := plumbing.NewRemoteReferenceName("upstream", baseBranchName)
 
 			err = gitRepo.CreateBranch(&gitConfig.Branch{Name: baseBranchName, Remote: "upstream", Merge: localBranchReferenceName})
@@ -84,7 +82,6 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 				log.Fatalf("could not set reference: %v", err)
 			}
 		}
-		// ---
 
 		err = gitTree.Checkout(&git.CheckoutOptions{
 			Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", baseBranchName)),
@@ -110,19 +107,19 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 
 	if headBranchName != "" {
 		// No errors are thrown here if the branch does not exist
-		// err = gitRepo.Storer.RemoveReference(plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", headBranchName)))
-		// if err != nil {
-		// 	log.Fatalf("could not delete branch: %v", err)
-		// }
-		// err = gitTree.Checkout(&git.CheckoutOptions{
-		// 	Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", headBranchName)),
-		// 	Force:  true,
-		// 	Create: true,
-		// })
+		err = gitRepo.Storer.RemoveReference(plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", headBranchName)))
+		if err != nil {
+			log.Fatalf("could not delete branch: %v", err)
+		}
+		err = gitTree.Checkout(&git.CheckoutOptions{
+			Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", headBranchName)),
+			Force:  true,
+			Create: true,
+		})
 
-		// if err != nil {
-		// 	log.Fatalf("could not checkout branch: %v", err)
-		// }
+		if err != nil {
+			log.Fatalf("could not checkout branch: %v", err)
+		}
 	}
 
 }

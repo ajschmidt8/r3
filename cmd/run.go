@@ -26,8 +26,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var UseInteractive bool
-var AddAll bool
+var (
+	useInteractive bool
+	addAll         bool
+	doCommit       bool
+	doPush         bool
+	doPR           bool
+)
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
@@ -69,9 +74,9 @@ to quickly create a Cobra application.`,
 			}
 
 			addFlag := "-p"
-			if UseInteractive {
+			if useInteractive {
 				addFlag = "-i"
-			} else if AddAll {
+			} else if addAll {
 				addFlag = "-A"
 			}
 			gitAddCmd := exec.Command("git", "add", addFlag)
@@ -84,9 +89,15 @@ to quickly create a Cobra application.`,
 
 		// Commit
 		for _, repoName := range config.Repos {
-			shared.Commit(repoName, config.CommitMsg)
-			shared.Push(repoName, config.BranchName)
-			shared.PR(config.PR.Title, config.PR.RepoOwner, repoName, config.PR.Draft, config.PR.BaseBranch, config.BranchName, config.PR.Body, config.PR.MaintainersModify, config.PR.Labels)
+			if doCommit || doPush || doPR {
+				shared.Commit(repoName, config.CommitMsg)
+			}
+			if doPush || doPR {
+				shared.Push(repoName, config.BranchName, false)
+			}
+			if doPR {
+				shared.PR(repoName, config.PR.RepoOwner, config.PR.Title, config.PR.Draft, config.PR.BaseBranch, config.BranchName, config.PR.Body, config.PR.MaintainersModify, config.PR.Labels)
+			}
 		}
 	},
 }
@@ -103,6 +114,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	runCmd.Flags().BoolVarP(&UseInteractive, "interactive", "i", false, `Use "git add -i" instead of "git add -p". Needed when you are adding new, untracked files to repos.`)
-	runCmd.Flags().BoolVarP(&AddAll, "all", "A", false, `Use "git add -A" instead of "git add -p".`)
+	runCmd.Flags().BoolVarP(&useInteractive, "interactive", "i", false, `Use "git add -i" instead of "git add -p". Needed when you are adding new, untracked files to repos.`)
+	runCmd.Flags().BoolVarP(&addAll, "all", "A", false, `Use "git add -A" instead of "git add -p".`)
+	runCmd.Flags().BoolVar(&doCommit, "commit", false, `Commits changes after they're made.`)
+	runCmd.Flags().BoolVar(&doPush, "push", false, `Pushes changes after they're committed (implies --commit).`)
+	runCmd.Flags().BoolVar(&doPR, "pr", false, `Opens a PR after changes are pushed (implies --push).`)
 }

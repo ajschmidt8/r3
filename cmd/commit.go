@@ -22,11 +22,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var createBranch bool
-
-// cloneCmd represents the clone command
-var cloneCmd = &cobra.Command{
-	Use:   "clone",
+// commitCmd represents the commit command
+var commitCmd = &cobra.Command{
+	Use:   "commit",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -35,30 +33,25 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("clone called")
+		fmt.Println("commit called")
 		config := shared.ReadConfig()
 
 		for _, repoName := range config.Repos {
-			newBranchName := ""
-			if createBranch {
-				newBranchName = config.BranchName
-			}
-			shared.Clone(repoName, config.PR.BaseBranch, newBranchName)
+			shared.Commit(repoName, config.CommitMsg)
 		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(cloneCmd)
+	rootCmd.AddCommand(commitCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// cloneCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// commitCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	cloneCmd.Flags().BoolVarP(&createBranch, "create-branch", "b", false, `Creates and checks out "branch_name" from config.yaml`)
+	// commitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

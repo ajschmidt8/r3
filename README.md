@@ -20,8 +20,9 @@ Then, run the following command to execute your script in all of the repos liste
 
 ```sh
 rrr run # runs scr.sh script on all repos in repos subdir
-rrr run --push # same as above, but also pushes branches after each commit
-rrr run --prs # same as above, but also opens PRs after each commit (implies --push)
+rrr run --commit # commits changes from script
+rrr run --push # same as above, but also pushes branches after commit (implies --commit)
+rrr run --pr # same as above, but also opens PRs after commit (implies --push)
 # use -i flag for interactive (as opposed the default -p for patch) x
 # use -A flag for adding all changes without prompts
 ```
@@ -29,8 +30,8 @@ rrr run --prs # same as above, but also opens PRs after each commit (implies --p
 Other commands:
 
 ```sh
-rrr push # Pushes local changes to remote
-rrr push --delete # (or -D) Deletes remote branch
+rrr push # Pushes local changes to remote x
+rrr push --delete # (or -D) Deletes remote branch x
 ```
 
 ```sh
@@ -38,7 +39,7 @@ rrr clone --create-branch # (-b) Creates and checks out
 ```
 
 ```sh
-rrr prs # Opens PRs (using config.yaml settings) for any repos that have outstanding changes in their directory
+rrr pr # Opens PRs (using config.yaml settings) for any repos that have outstanding changes in their directory
 ```
 
 ```sh
