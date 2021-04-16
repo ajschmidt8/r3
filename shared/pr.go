@@ -17,11 +17,18 @@ func PR(repoName string, repoOwner string, title string, draft bool, baseBranch 
 	)
 	tc := oauth2.NewClient(ctx, ts)
 
+	prHead := headBranch
+	prAuthor := viper.GetString("gh_username")
+
+	// Prefix head branch with "<author>:" if opening PR from a fork
+	if repoOwner != prAuthor {
+		prHead = prAuthor + ":" + headBranch
+	}
 	client := github.NewClient(tc)
 	newPR := &github.NewPullRequest{
 		Title:               github.String(title),
 		Base:                github.String(baseBranch),
-		Head:                github.String(viper.GetString("gh_username") + ":" + headBranch),
+		Head:                github.String(prHead),
 		Body:                github.String(body),
 		MaintainerCanModify: github.Bool(maintainerModify),
 		Draft:               github.Bool(draft),
