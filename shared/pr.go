@@ -21,7 +21,7 @@ func PR(repoName string, repoOwner string, title string, draft bool, baseBranch 
 	newPR := &github.NewPullRequest{
 		Title:               github.String(title),
 		Base:                github.String(baseBranch),
-		Head:                github.String(headBranch),
+		Head:                github.String(viper.GetString("gh_username") + ":" + headBranch),
 		Body:                github.String(body),
 		MaintainerCanModify: github.Bool(maintainerModify),
 		Draft:               github.Bool(draft),
