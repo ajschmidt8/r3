@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -45,16 +44,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("run called")
 		reposDir := "repos"
 		config := shared.ReadConfig()
 		rootDir, _ := os.Getwd()
 		scriptPath := path.Join(rootDir, "scr.sh")
-		fmt.Printf("scr path %s\n", scriptPath)
 
 		// Clone
 		for _, repoName := range config.Repos {
-			fmt.Printf("Cloning %s\n", repoName)
 			shared.Clone(repoName, config.PR.BaseBranch, config.BranchName)
 		}
 

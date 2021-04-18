@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 
 	"github.com/ajschmidt8/rrr/shared"
@@ -34,7 +33,6 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
 		ioutil.WriteFile("scr.sh", []byte(shared.Script), 0755)
 		ioutil.WriteFile("config.yaml", []byte(shared.Config), 0644)
 	},

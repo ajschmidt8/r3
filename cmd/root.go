@@ -31,13 +31,10 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	fmt.Println("execute before")
 	cobra.CheckErr(rootCmd.Execute())
-	fmt.Println("execute after")
 }
 
 func init() {
-	fmt.Println("root init called")
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
@@ -53,6 +50,7 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	// Find home directory.
 	home, err := homedir.Dir()
 	cobra.CheckErr(err)
 
@@ -60,7 +58,6 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
 
 		// Search config in home directory with name ".rrr" (without extension).
 		viper.AddConfigPath(home)
@@ -70,10 +67,7 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	} else {
-		fmt.Println("no config file found")
+	if err := viper.ReadInConfig(); err != nil {
 		var (
 			githubUsername string
 			githubToken    string

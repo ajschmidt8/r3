@@ -22,7 +22,6 @@ func dirExists(path string) (exists bool) {
 }
 
 func Clone(repoName string, baseBranchName string, headBranchName string) {
-	fmt.Println("clone called")
 	var gitTree *git.Worktree
 	var gitRepo *git.Repository
 	var err error
@@ -31,7 +30,6 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 	repoDir := path.Join(cwd, reposDir, repoName)
 
 	if !dirExists(repoDir) {
-		fmt.Printf("repos dir doesn't exist, cloning %v\n", baseBranchName)
 		gitRepo, err = git.PlainClone(repoDir, false, &git.CloneOptions{
 			ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", baseBranchName)),
 			Progress:      os.Stdout,
@@ -54,8 +52,6 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 			log.Fatalf("could not create remote: %v", err)
 		}
 	} else {
-
-		fmt.Printf("repos dir does exist!\n")
 		gitRepo, err = git.PlainOpen(repoDir)
 		if err != nil {
 			log.Fatalf("could not open repo: %v", err)
