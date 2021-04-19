@@ -47,5 +47,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// pushCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	pushCmd.Flags().BoolVarP(&deleteBranch, "delete", "d", false, `Deletes branch from remote if it exists already.`)
+	pushCmd.Flags().BoolVarP(&deleteBranch, "delete", "d", false, `Instead of pushing branch, deletes branch from remote if it exists already.`)
 }
