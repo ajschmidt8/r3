@@ -50,8 +50,7 @@ rrr pr # Opens PRs (using config.yaml settings) for any repos that have outstand
 - [x] Setup global config file (`~/rrr.yaml`) on `rrr init`?
   - Contains GitHub username and GitHub API key
 - [ ] Parallelize cloning of repos (go routine?)
-- [ ] Update all help messages
-- [ ] Inject `REPO_NAME` environmental variable into script environment
+- [x] Update all help messages
 - [ ] If `push --delete` errors because branch is already deleted, then just `continue` instead of exiting with error code
 
 - Handle case where: changes are committed/pushed & PRs are already opened & user needs to push updates without deleting existing branch/PR

@@ -25,13 +25,10 @@ var createBranch bool
 // cloneCmd represents the clone command
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Clone repositories",
+	Long: `Clone each repository listed in config.yaml.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+By default, the "pr.base_branch" value will be checked out in each repository.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := shared.ReadConfig()
 
@@ -57,5 +54,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	cloneCmd.Flags().BoolVarP(&createBranch, "create-branch", "b", false, `Creates and checks out "branch_name" from config.yaml`)
+	cloneCmd.Flags().BoolVarP(&createBranch, "create-branch", "b", false, `Create and check out "branch_name" from config.yaml`)
 }

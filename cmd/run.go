@@ -36,13 +36,9 @@ var (
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Clone and run change script in each repository",
+	Long: `Clone and run change script in each repository,
+then stage files interactively with git "add --patch".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		reposDir := "repos"
 		config := shared.ReadConfig()
@@ -70,7 +66,9 @@ to quickly create a Cobra application.`,
 			}
 
 			addFlag := "-p"
-			if useInteractive {
+			if useInteractive && addAll {
+				log.Fatal(`Use "--all" or "--interactive", but not both.` + "\n")
+			} else if useInteractive {
 				addFlag = "-i"
 			} else if addAll {
 				addFlag = "-A"
@@ -110,7 +108,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	runCmd.Flags().BoolVarP(&useInteractive, "interactive", "i", false, `Use "git add -i" instead of "git add -p". Needed when you are adding new, untracked files to repos.`)
+	runCmd.Flags().BoolVarP(&useInteractive, "interactive", "i", false, `Use "git add -i" instead of "git add -p".`)
 	runCmd.Flags().BoolVarP(&addAll, "all", "A", false, `Use "git add -A" instead of "git add -p".`)
 	runCmd.Flags().BoolVar(&doCommit, "commit", false, `Commits changes after they're made.`)
 	runCmd.Flags().BoolVar(&doPush, "push", false, `Pushes changes after they're committed (implies --commit).`)

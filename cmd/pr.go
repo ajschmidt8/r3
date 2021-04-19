@@ -23,13 +23,7 @@ import (
 // prCmd represents the pr command
 var prCmd = &cobra.Command{
 	Use:   "pr",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: `Open a PR for each repository according to the information in config.yaml.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := shared.ReadConfig()
 

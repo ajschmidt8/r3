@@ -25,13 +25,12 @@ import (
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Generate necessary config files",
+	Long: `Generates the following config files:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+  - scr.sh - script to be run in each repo
+  - config.yaml - yaml file to define repos to change & PR information
+  - README.md - quick README with some examples`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ioutil.WriteFile("scr.sh", []byte(shared.Script), 0755)
 		ioutil.WriteFile("config.yaml", []byte(shared.Config), 0644)
