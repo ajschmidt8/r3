@@ -1,5 +1,7 @@
 package shared
 
+import "fmt"
+
 const Script = `#!/bin/bash
 
 # This script will be executed in each repo
@@ -23,10 +25,11 @@ type ConfigInterface struct {
 	CommitMsg  string   `yaml:"commit_msg"`
 }
 
-const Config = `---
+func Config(base_branch string) string {
+	return fmt.Sprintf(`---
 pr:
   repo_owner: rapidsai
-  base_branch: branch-0.19
+  base_branch: %s
   draft: false
   maintainers_can_modify: true
   title: Update CHANGELOG.md
@@ -56,4 +59,5 @@ repos:
 #  - dask-cuda
 #  - raft
 #  - rmm
-`
+`, base_branch)
+}

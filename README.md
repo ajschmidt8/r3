@@ -44,8 +44,7 @@ rrr pr # Opens PRs (using config.yaml settings) for any repos that have outstand
 
 **To Do:**
 
-- [x] Add setting for `git add` `-i` vs `-p` flags (`-i` is necessary for interactively staging files that aren't yet tracked)
-- [ ] Make _base_branch_ dynamic - get default branch from cuDF repo
+- [x] Make _base_branch_ dynamic - get default branch from cuDF repo
 - [ ] Handle forks (create forks for user if they don't already exist)
 - [x] Setup global config file (`~/rrr.yaml`) on `rrr init`?
   - Contains GitHub username and GitHub API key

@@ -32,9 +32,21 @@ var initCmd = &cobra.Command{
   - config.yaml - yaml file to define repos to change & PR information
   - README.md - quick README with some examples`,
 	Run: func(cmd *cobra.Command, args []string) {
+		base_branch := getLatestBranch()
 		ioutil.WriteFile("scr.sh", []byte(shared.Script), 0755)
-		ioutil.WriteFile("config.yaml", []byte(shared.Config), 0644)
+		ioutil.WriteFile("config.yaml", []byte(shared.Config(base_branch)), 0644)
 	},
+}
+
+func getLatestBranch() (branch string) {
+	branch = "branch-0.xx  # branch to base your changes off of"
+	client, ctx := shared.GetGitHubClient()
+	repo, _, err := client.Repositories.Get(ctx, "rapidsai", "cudf")
+	if err != nil {
+		return
+	}
+	branch = *(repo.DefaultBranch)
+	return
 }
 
 func init() {
