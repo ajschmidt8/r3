@@ -28,7 +28,8 @@ var cloneCmd = &cobra.Command{
 	Short: "Clone repositories",
 	Long: `Clone each repository listed in config.yaml.
 
-By default, the "pr.base_branch" value will be checked out in each repository.`,
+By default, the "pr.base_branch" value will be checked out in each repository.
+This command will create a fork of the desired repo if one does not exist already.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := shared.ReadConfig()
 

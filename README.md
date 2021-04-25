@@ -44,10 +44,6 @@ rrr pr # Opens PRs (using config.yaml settings) for any repos that have outstand
 
 **To Do:**
 
-- [x] Make _base_branch_ dynamic - get default branch from cuDF repo
-- [ ] Handle forks (create forks for user if they don't already exist)
-- [x] Setup global config file (`~/rrr.yaml`) on `rrr init`?
-  - Contains GitHub username and GitHub API key
 - [ ] Parallelize cloning of repos (go routine?)
 - [x] Update all help messages
 - [ ] If `push --delete` errors because branch is already deleted, then just `continue` instead of exiting with error code

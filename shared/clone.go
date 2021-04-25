@@ -9,6 +9,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	gitConfig "github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/google/go-github/v34/github"
 	"github.com/spf13/viper"
 )
 
@@ -21,6 +22,12 @@ func dirExists(path string) (exists bool) {
 	return
 }
 
+func createFork(repoName string) {
+	client, ctx := GetGitHubClient()
+	// the "create fork" point can be called regardless of whether a fork already exists or not
+	client.Repositories.CreateFork(ctx, "rapidsai", repoName, &github.RepositoryCreateForkOptions{})
+}
+
 func Clone(repoName string, baseBranchName string, headBranchName string) {
 	var gitTree *git.Worktree
 	var gitRepo *git.Repository
@@ -30,6 +37,7 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 	repoDir := path.Join(cwd, reposDir, repoName)
 
 	if !dirExists(repoDir) {
+		createFork(repoName)
 		gitRepo, err = git.PlainClone(repoDir, false, &git.CloneOptions{
 			ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", baseBranchName)),
 			Progress:      os.Stdout,
