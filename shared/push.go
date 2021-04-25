@@ -28,9 +28,14 @@ func Push(repoName string, headBranchName string, deleteBranch bool) {
 		err = gitRemote.Push(&git.PushOptions{
 			RefSpecs: []gitConfig.RefSpec{gitConfig.RefSpec(":refs/heads/" + headBranchName)},
 		})
+		if err == git.NoErrAlreadyUpToDate {
+			fmt.Printf("No \"%s\" branch to delete. Skipping...\n", headBranchName)
+			return
+		}
 		if err != nil {
 			log.Fatalf("could not delete remote branch: %v", err)
 		}
+		fmt.Printf("Deleted branch: %s\n", headBranchName)
 		return
 	}
 

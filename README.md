@@ -45,8 +45,7 @@ rrr pr # Opens PRs (using config.yaml settings) for any repos that have outstand
 **To Do:**
 
 - [ ] Parallelize cloning of repos (go routine?)
-- [x] Update all help messages
-- [ ] If `push --delete` errors because branch is already deleted, then just `continue` instead of exiting with error code
+- [ ] Skip a repo during `run` if there are no changes to be staged
 
 - Handle case where: changes are committed/pushed & PRs are already opened & user needs to push updates without deleting existing branch/PR
 
