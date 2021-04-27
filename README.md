@@ -41,4 +41,3 @@ Use `rrr -h` or `rrr <command> -h` for more info and available flags
 **To Do:**
 
 - [ ] Parallelize cloning of repos (go routine?)
-- [ ] Create GitHub Action to automatically build & upload assets to every GitHub Release
