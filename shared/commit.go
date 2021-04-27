@@ -9,10 +9,15 @@ import (
 	"github.com/go-git/go-git/v5"
 )
 
-// If there are staged files, commits them to the
-// currently active branch. Does nothing if there
-// are no staged files
-func Commit(repoName string, commitMsg string) {
+type NoChangesError struct{}
+
+func (e *NoChangesError) Error() string {
+	return fmt.Sprintln("No staged files changes in worktree.")
+}
+
+// Commits the staged changes in a repo. Returns NoChangesError
+// if there are no staged changes in the repo.
+func Commit(repoName string, commitMsg string) error {
 	reposDir := "repos"
 	cwd, _ := os.Getwd()
 	repoDir := path.Join(cwd, reposDir, repoName)
@@ -40,9 +45,10 @@ func Commit(repoName string, commitMsg string) {
 	}
 
 	if !hasStagedChanges {
-		fmt.Printf("No staged changes in %s repo. Skipping...\n", repoName)
-		return
+		fmt.Printf("No staged changes in %s repo. Skipping commit.\n", repoName)
+		return &NoChangesError{}
 	}
 
 	gitTree.Commit(commitMsg, &git.CommitOptions{})
+	return nil
 }
