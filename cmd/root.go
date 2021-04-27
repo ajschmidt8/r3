@@ -11,10 +11,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+var VERSION = "0.0.0"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:  "rrr",
-	Long: "A CLI tool for programmatically making changes across several RAPIDS repos.",
+	Use:     "rrr",
+	Long:    "A CLI tool for programmatically making changes across several RAPIDS repos.",
+	Version: VERSION,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
