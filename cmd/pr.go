@@ -8,7 +8,7 @@ import (
 // prCmd represents the pr command
 var prCmd = &cobra.Command{
 	Use:   "pr",
-	Short: `Open a PR for each repository according to the information in config.yaml.`,
+	Short: `Open a PR for each repository according to the information in config.yaml`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := shared.ReadConfig()
 

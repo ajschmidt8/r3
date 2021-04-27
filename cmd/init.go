@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	"github.com/ajschmidt8/rrr/shared"
@@ -20,6 +21,7 @@ var initCmd = &cobra.Command{
 		base_branch := getLatestBranch()
 		ioutil.WriteFile("scr.sh", []byte(shared.Script), 0755)
 		ioutil.WriteFile("config.yaml", []byte(shared.Config(base_branch)), 0644)
+		fmt.Println("Run `rrr -h` or visit https://github.com/ajschmidt8/rapids-repo-reviser for usage instructions.")
 	},
 }
 
