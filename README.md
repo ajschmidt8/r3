@@ -45,7 +45,6 @@ rrr pr # Opens PRs (using config.yaml settings) for any repos that have outstand
 **To Do:**
 
 - [ ] Parallelize cloning of repos (go routine?)
-- [ ] Skip a repo during `run` if there are no changes to be staged
 - [ ] Create GitHub Action to automatically build & upload assets to every GitHub Release
 
 - Handle case where: changes are committed/pushed & PRs are already opened & user needs to push updates without deleting existing branch/PR
