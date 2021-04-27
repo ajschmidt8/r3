@@ -69,7 +69,10 @@ then stage files interactively with git "add --patch".`,
 		// Commit
 		for _, repoName := range config.Repos {
 			if doCommit || doPush || doPR {
-				shared.Commit(repoName, config.CommitMsg)
+				err := shared.Commit(repoName, config.CommitMsg)
+				if _, ok := err.(*shared.NoChangesError); ok {
+					continue
+				}
 			}
 			if doPush || doPR {
 				shared.Push(repoName, config.BranchName, false)
