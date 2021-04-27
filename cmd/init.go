@@ -15,8 +15,7 @@ var initCmd = &cobra.Command{
 	Long: `Generates the following config files:
 
   - scr.sh - script to be run in each repo
-  - config.yaml - yaml file to define repos to change & PR information
-  - README.md - quick README with some examples`,
+  - config.yaml - yaml file to define repos to change & PR information`,
 	Run: func(cmd *cobra.Command, args []string) {
 		base_branch := getLatestBranch()
 		ioutil.WriteFile("scr.sh", []byte(shared.Script), 0755)
