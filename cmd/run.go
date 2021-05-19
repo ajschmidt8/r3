@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -57,6 +58,12 @@ then stage files interactively with git "add --patch".`,
 				addFlag = "-i"
 			} else if addAll {
 				addFlag = "-A"
+			}
+
+			if addFlag == "-A" {
+				fmt.Printf("Staged all changes for \u001b[32;1m%s\u001b[0m.\n", repoName)
+			} else {
+				fmt.Printf("\n\nChanges for \u001b[32;1m%s\u001b[0m:\n", repoName)
 			}
 			gitAddCmd := exec.Command("git", "add", addFlag)
 			gitAddCmd.Stdout = os.Stdout
