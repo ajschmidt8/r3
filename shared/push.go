@@ -29,7 +29,7 @@ func Push(repoName string, headBranchName string, deleteBranch bool) {
 			RefSpecs: []gitConfig.RefSpec{gitConfig.RefSpec(":refs/heads/" + headBranchName)},
 		})
 		if err == git.NoErrAlreadyUpToDate {
-			fmt.Printf("No \"%s\" branch to delete. Skipping...\n", headBranchName)
+			fmt.Printf("No \"%s\" branch to delete in repo \"%s\". Skipping...\n", headBranchName, repoName)
 			return
 		}
 		if err != nil {
