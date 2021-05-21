@@ -5,6 +5,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/ajschmidt8/rrr/shared"
+	"github.com/cli/oauth"
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -51,22 +53,33 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		var (
-			githubUsername string
-			githubToken    string
-		)
 		file, err := os.Create(path.Join(home, ".rrr.yaml"))
 		cobra.CheckErr(err)
 		err = file.Chmod(0644)
 		cobra.CheckErr(err)
 
-		fmt.Print("Enter GitHub username: ")
-		fmt.Scanf("%s", &githubUsername)
-		fmt.Print("Enter GitHub token (used for opening PRs): ")
-		fmt.Scanf("%s", &githubToken)
+		fmt.Println("Please authenticate yourself with GitHub")
+		flow := &oauth.Flow{
+			Hostname: "github.com",
+			ClientID: "86a16c620e29a524c82a",
+			Scopes:   []string{"repo", "user"},
+		}
 
-		viper.Set("gh_username", githubUsername)
-		viper.Set("gh_token", githubToken)
+		githubToken, err := flow.DetectFlow()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("Authentication success!")
+		viper.Set("gh_token", githubToken.Token)
+		viper.WriteConfig()
+
+		client, ctx := shared.GetGitHubClient()
+		user, _, err := client.Users.Get(ctx, "")
+		if err != nil {
+			panic(err)
+		}
+
+		viper.Set("gh_username", user.GetLogin())
 		viper.WriteConfig()
 	}
 

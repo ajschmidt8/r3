@@ -41,5 +41,5 @@ Use `rrr -h` or `rrr <command> -h` for more info and available flags
 ## To Do:
 
 - [ ] Parallelize cloning of repos (go routine?)
-- [ ] Use oauth for GitHub authentication
+- [ ] Improve logging during clones
 - [ ] Unit tests
