@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path"
 
@@ -57,9 +58,10 @@ func initConfig() {
 		err = file.Chmod(0644)
 		cobra.CheckErr(err)
 
+		fmt.Println("Please authenticate yourself with GitHub")
 		flow := &oauth.Flow{
 			Hostname: "github.com",
-			ClientID: os.Getenv("OAUTH_CLIENT_ID"),
+			ClientID: "86a16c620e29a524c82a",
 			Scopes:   []string{"repo", "user"},
 		}
 
@@ -67,6 +69,7 @@ func initConfig() {
 		if err != nil {
 			panic(err)
 		}
+		fmt.Println("Authentication success!")
 		viper.Set("gh_token", githubToken.Token)
 		viper.WriteConfig()
 
