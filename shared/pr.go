@@ -3,6 +3,7 @@ package shared
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/google/go-github/v34/github"
 	"github.com/spf13/viper"
@@ -32,6 +33,8 @@ func PR(repoName string, repoOwner string, title string, draft bool, baseBranch 
 	if err != nil {
 		log.Fatalf("could not create PR: %v", err)
 	}
+
+	time.Sleep(1 * time.Second)
 
 	_, _, err = client.Issues.AddLabelsToIssue(ctx, repoOwner, repoName, pr.GetNumber(), labels)
 	if err != nil {
