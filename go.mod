@@ -1,4 +1,4 @@
-module github.com/ajschmidt8/rrr
+module github.com/ajschmidt8/r3
 
 go 1.16
 

@@ -7,7 +7,7 @@
 First, create and enter an empty directory and run:
 
 ```sh
-rrr init
+r3 init
 ```
 
 This command will generate the following files:
@@ -18,10 +18,10 @@ This command will generate the following files:
 Then, run the following command to execute your script in all of the repos listed in `config.yaml`:
 
 ```sh
-rrr run # runs scr.sh script on all repos in repos subdir
-rrr run --commit # commits changes from script
-rrr run --push # same as above, but also pushes branches after commit (implies --commit)
-rrr run --pr # same as above, but also opens PRs after commit (implies --push)
+r3 run # runs scr.sh script on all repos in repos subdir
+r3 run --commit # commits changes from script
+r3 run --push # same as above, but also pushes branches after commit (implies --commit)
+r3 run --pr # same as above, but also opens PRs after commit (implies --push)
 
 # use -i flag for interactive (as opposed the default -p for patch)
 # use -A flag for adding all changes without prompts
@@ -30,13 +30,13 @@ rrr run --pr # same as above, but also opens PRs after commit (implies --push)
 Other available commands include:
 
 ```sh
-rrr clone
-rrr commit
-rrr pr
-rrr push
+r3 clone
+r3 commit
+r3 pr
+r3 push
 ```
 
-Use `rrr -h` or `rrr <command> -h` for more info and available flags
+Use `r3 -h` or `r3 <command> -h` for more info and available flags
 
 ## To Do:
 
