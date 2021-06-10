@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
 	gitConfig "github.com/go-git/go-git/v5/config"
@@ -34,6 +35,7 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 	var err error
 	reposDir := "repos"
 	cwd, _ := os.Getwd()
+	repoName = strings.ToLower(repoName)
 	repoDir := path.Join(cwd, reposDir, repoName)
 	fmt.Printf("Cloning %s\n", repoName)
 
