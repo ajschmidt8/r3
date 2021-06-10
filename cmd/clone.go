@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"sync"
+
 	"github.com/ajschmidt8/rrr/shared"
 	"github.com/spf13/cobra"
 )
@@ -17,14 +19,30 @@ By default, the "pr.base_branch" value will be checked out in each repository.
 This command will create a fork of the desired repo if one does not exist already.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := shared.ReadConfig()
+		var wg sync.WaitGroup
+		workerPoolSize := shared.ConcurrentClones
+		dataCh := make(chan shared.CloneJob, workerPoolSize)
+
+		for i := 0; i < workerPoolSize; i++ {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+
+				for job := range dataCh {
+					shared.Clone(job.RepoName, config.PR.BaseBranch, job.NewBranchName)
+				}
+			}()
+		}
 
 		for _, repoName := range config.Repos {
 			newBranchName := ""
 			if createBranch {
 				newBranchName = config.BranchName
 			}
-			shared.Clone(repoName, config.PR.BaseBranch, newBranchName)
+			dataCh <- shared.CloneJob{RepoName: repoName, NewBranchName: newBranchName}
 		}
+		close(dataCh)
+		wg.Wait()
 	},
 }
 

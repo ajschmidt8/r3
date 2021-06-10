@@ -7,7 +7,7 @@ const Script = `#!/bin/bash
 # This script will be executed in each repo
 
 # Update the changelog of each repo
-echo "rrr is great!" > CHANGELOG.md
+echo "rrr is great!" >> CHANGELOG.md
 `
 
 type ConfigInterface struct {

@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"sync"
 
 	"github.com/ajschmidt8/rrr/shared"
 	"github.com/spf13/cobra"
@@ -30,11 +31,26 @@ then stage files interactively with git "add --patch".`,
 		config := shared.ReadConfig()
 		rootDir, _ := os.Getwd()
 		scriptPath := path.Join(rootDir, "scr.sh")
+		var wg sync.WaitGroup
+		workerPoolSize := shared.ConcurrentClones
+		dataCh := make(chan shared.CloneJob)
+
+		for i := 0; i < workerPoolSize; i++ {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for job := range dataCh {
+					shared.Clone(job.RepoName, config.PR.BaseBranch, config.BranchName)
+				}
+			}()
+		}
 
 		// Clone
 		for _, repoName := range config.Repos {
-			shared.Clone(repoName, config.PR.BaseBranch, config.BranchName)
+			dataCh <- shared.CloneJob{RepoName: repoName}
 		}
+		close(dataCh)
+		wg.Wait()
 
 		// Make changes
 		for _, repoName := range config.Repos {
