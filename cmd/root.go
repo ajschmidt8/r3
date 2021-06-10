@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/ajschmidt8/rrr/shared"
+	"github.com/ajschmidt8/r3/shared"
 	"github.com/cli/oauth"
 	"github.com/spf13/cobra"
 
@@ -17,7 +17,7 @@ var VERSION = "0.0.0"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "rrr",
+	Use:     "r3",
 	Long:    "A CLI tool for programmatically making changes across several RAPIDS repos.",
 	Version: VERSION,
 }
@@ -47,13 +47,13 @@ func initConfig() {
 	cobra.CheckErr(err)
 
 	viper.AddConfigPath(home)
-	viper.SetConfigName(".rrr")
+	viper.SetConfigName(".r3")
 
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		file, err := os.Create(path.Join(home, ".rrr.yaml"))
+		file, err := os.Create(path.Join(home, ".r3.yaml"))
 		cobra.CheckErr(err)
 		err = file.Chmod(0644)
 		cobra.CheckErr(err)

@@ -8,7 +8,7 @@ import (
 	"path"
 	"sync"
 
-	"github.com/ajschmidt8/rrr/shared"
+	"github.com/ajschmidt8/r3/shared"
 	"github.com/spf13/cobra"
 )
 

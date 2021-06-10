@@ -7,7 +7,7 @@ const Script = `#!/bin/bash
 # This script will be executed in each repo
 
 # Update the changelog of each repo
-echo "rrr is great!" >> CHANGELOG.md
+echo "r3 is great!" >> CHANGELOG.md
 `
 
 type ConfigInterface struct {
@@ -34,7 +34,7 @@ pr:
   maintainers_can_modify: true
   title: Update CHANGELOG.md
   body: |
-    This PR updates the CHANGELOG.md file using the really great rrr tool.
+    This PR updates the CHANGELOG.md file using the really great r3 tool.
   labels:
     - non-breaking
     - improvement
