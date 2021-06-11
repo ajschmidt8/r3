@@ -1,6 +1,6 @@
-# rapids-repo-reviser
+# r3
 
-`rapids-repo-reviser` is a CLI tool built with Golang that automates the process of making changes to all of the RAPIDS repos.
+`r3` (_RAPIDS repo reviser_) is a CLI tool built with Golang that automates the process of making changes to all of the RAPIDS repos.
 
 ## Usage
 
@@ -40,6 +40,5 @@ Use `r3 -h` or `r3 <command> -h` for more info and available flags
 
 ## To Do:
 
-- [ ] Parallelize cloning of repos (go routine?)
 - [ ] Improve logging during clones
 - [ ] Unit tests
