@@ -94,7 +94,7 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 			RemoteName: "upstream",
 			Force:      true,
 		})
-		if err != nil {
+		if !(err == nil || err == git.NoErrAlreadyUpToDate) {
 			log.Fatalf("could not fetch repo remote: %v", err)
 		}
 
