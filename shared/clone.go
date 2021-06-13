@@ -90,6 +90,14 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 			}
 		}
 
+		err = gitRepo.Fetch(&git.FetchOptions{
+			RemoteName: "upstream",
+			Force:      true,
+		})
+		if err != nil {
+			log.Fatalf("could not fetch repo remote: %v", err)
+		}
+
 		err = gitTree.Checkout(&git.CheckoutOptions{
 			Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", baseBranchName)),
 			Force:  true,
