@@ -37,7 +37,7 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 	cwd, _ := os.Getwd()
 	repoName = strings.ToLower(repoName)
 	repoDir := path.Join(cwd, reposDir, repoName)
-	fmt.Printf("Cloning %s\n", repoName)
+	fmt.Printf("  - %s\n", repoName)
 
 	if !dirExists(repoDir) {
 		createFork(repoName)
@@ -47,7 +47,7 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 			RemoteName:    "upstream",
 		})
 		if err != nil {
-			log.Fatalf("could not clone repo: %v", err)
+			log.Fatalf("could not clone %s: %v", repoName, err)
 		}
 
 		gitTree, err = gitRepo.Worktree()

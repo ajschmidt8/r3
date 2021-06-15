@@ -41,5 +41,5 @@ func PR(repoName string, repoOwner string, title string, draft bool, baseBranch 
 		log.Fatalf("could not add labels: %v", err)
 	}
 
-	fmt.Printf("\nPR created: %s\n", pr.GetHTMLURL())
+	fmt.Printf("%s\n", pr.GetHTMLURL())
 }

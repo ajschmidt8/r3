@@ -45,10 +45,11 @@ func Commit(repoName string, commitMsg string) error {
 	}
 
 	if !hasStagedChanges {
-		fmt.Printf("No staged changes in %s repo. Skipping commit.\n", repoName)
+		fmt.Printf("  - No staged changes in \"%s\" repo. Skipping...\n", repoName)
 		return &NoChangesError{}
 	}
 
 	gitTree.Commit(commitMsg, &git.CommitOptions{})
+	fmt.Printf("  - %s\n", repoName)
 	return nil
 }
