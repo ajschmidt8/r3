@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/ajschmidt8/r3/shared"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -46,12 +47,16 @@ then stage files interactively with git "add --patch".`,
 		}
 
 		// Clone
-		for _, repoName := range config.Repos {
+		for i, repoName := range config.Repos {
+			if i == 0 {
+				color.New(color.Bold).Println("Cloning repos:")
+			}
 			dataCh <- shared.CloneJob{RepoName: repoName}
 		}
 		close(dataCh)
 		wg.Wait()
 
+		fmt.Println()
 		// Make changes
 		for _, repoName := range config.Repos {
 			repoDir := path.Join(rootDir, reposDir, repoName)
@@ -77,10 +82,11 @@ then stage files interactively with git "add --patch".`,
 			}
 
 			if addFlag == "-A" {
-				fmt.Printf("Staged all changes for \u001b[32;1m%s\u001b[0m.\n", repoName)
+				fmt.Print("Staged all changes for ")
 			} else {
-				fmt.Printf("\n\nChanges for \u001b[32;1m%s\u001b[0m:\n", repoName)
+				fmt.Print("\nChanges for ")
 			}
+			color.New(color.FgGreen, color.Bold).Printf("%s\n", repoName)
 			gitAddCmd := exec.Command("git", "add", addFlag)
 			gitAddCmd.Stdout = os.Stdout
 			gitAddCmd.Stdin = os.Stdin
@@ -89,18 +95,41 @@ then stage files interactively with git "add --patch".`,
 		}
 		os.Chdir(rootDir) // cd back to rootDir after script
 
+		changedRepos := make([]string, 0, len(config.Repos))
+
 		// Commit
-		for _, repoName := range config.Repos {
+		for i, repoName := range config.Repos {
 			if doCommit || doPush || doPR {
+				if i == 0 {
+					fmt.Println()
+					color.New(color.Bold).Println("Committing changes:")
+				}
 				err := shared.Commit(repoName, config.CommitMsg)
 				if _, ok := err.(*shared.NoChangesError); ok {
 					continue
 				}
+				changedRepos = append(changedRepos, repoName)
 			}
+		}
+
+		// Push
+		for i, repoName := range changedRepos {
 			if doPush || doPR {
+				if i == 0 {
+					fmt.Println()
+					color.New(color.Bold).Println("Pushing changes:")
+				}
 				shared.Push(repoName, config.BranchName, false)
 			}
+		}
+
+		// PR
+		for i, repoName := range changedRepos {
 			if doPR {
+				if i == 0 {
+					fmt.Println()
+					color.New(color.Bold).Println("Opening PRs:")
+				}
 				shared.PR(repoName, config.PR.RepoOwner, config.PR.Title, config.PR.Draft, config.PR.BaseBranch, config.BranchName, config.PR.Body, config.PR.MaintainersModify, config.PR.Labels)
 			}
 		}

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/ajschmidt8/r3/shared"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -12,6 +13,7 @@ var prCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := shared.ReadConfig()
 
+		color.New(color.Bold).Println("Opening PRs:")
 		for _, repoName := range config.Repos {
 			shared.PR(repoName, config.PR.RepoOwner, config.PR.Title, config.PR.Draft, config.PR.BaseBranch, config.BranchName, config.PR.Body, config.PR.MaintainersModify, config.PR.Labels)
 		}
