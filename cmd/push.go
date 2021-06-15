@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/ajschmidt8/r3/shared"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +15,7 @@ var pushCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := shared.ReadConfig()
 
+		color.New(color.Bold).Println("Pushing changes:")
 		for _, repoName := range config.Repos {
 			shared.Push(repoName, config.BranchName, deleteBranch)
 		}

@@ -35,7 +35,7 @@ func Push(repoName string, headBranchName string, deleteBranch bool) {
 		if err != nil {
 			log.Fatalf("could not delete remote branch: %v", err)
 		}
-		fmt.Printf("Deleted branch: %s\n", headBranchName)
+		fmt.Printf("Deleted branch from %s: %s\n", repoName, headBranchName)
 		return
 	}
 
@@ -46,4 +46,5 @@ func Push(repoName string, headBranchName string, deleteBranch bool) {
 	if err != nil {
 		log.Fatalf("could not push branch: %v", err)
 	}
+	fmt.Printf("  - %s\n", repoName)
 }

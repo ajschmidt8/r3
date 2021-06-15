@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 
 	"github.com/ajschmidt8/r3/shared"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +21,7 @@ var initCmd = &cobra.Command{
 		base_branch := getLatestBranch()
 		ioutil.WriteFile("scr.sh", []byte(shared.Script), 0755)
 		ioutil.WriteFile("config.yaml", []byte(shared.Config(base_branch)), 0644)
+		color.New(color.Bold).Println("Init Complete!")
 		fmt.Println("Run `r3 -h` or visit https://github.com/ajschmidt8/r3 for usage instructions.")
 	},
 }

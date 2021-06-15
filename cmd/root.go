@@ -7,6 +7,7 @@ import (
 
 	"github.com/ajschmidt8/r3/shared"
 	"github.com/cli/oauth"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -49,16 +50,9 @@ func initConfig() {
 	viper.AddConfigPath(home)
 	viper.SetConfigName(".r3")
 
-	viper.AutomaticEnv() // read in environment variables that match
-
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		file, err := os.Create(path.Join(home, ".r3.yaml"))
-		cobra.CheckErr(err)
-		err = file.Chmod(0644)
-		cobra.CheckErr(err)
-
-		fmt.Println("Please authenticate yourself with GitHub")
+		color.New(color.FgGreen, color.Bold).Println("Please authenticate yourself with GitHub")
 		flow := &oauth.Flow{
 			Hostname: "github.com",
 			ClientID: "86a16c620e29a524c82a",
@@ -70,6 +64,7 @@ func initConfig() {
 			panic(err)
 		}
 		fmt.Println("Authentication success!")
+		fmt.Println("")
 		viper.Set("gh_token", githubToken.Token)
 		viper.WriteConfig()
 
@@ -80,6 +75,10 @@ func initConfig() {
 		}
 
 		viper.Set("gh_username", user.GetLogin())
+		file, err := os.Create(path.Join(home, ".r3.yaml"))
+		cobra.CheckErr(err)
+		err = file.Chmod(0644)
+		cobra.CheckErr(err)
 		viper.WriteConfig()
 	}
 

@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/ajschmidt8/r3/shared"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -34,6 +35,7 @@ This command will create a fork of the desired repo if one does not exist alread
 			}()
 		}
 
+		color.New(color.Bold).Println("Cloning repos:")
 		for _, repoName := range config.Repos {
 			newBranchName := ""
 			if createBranch {
