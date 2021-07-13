@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/cli/oauth v0.8.0
-	github.com/fatih/color v1.12.0 // indirect
+	github.com/fatih/color v1.12.0
 	github.com/go-git/go-git/v5 v5.2.0
 	github.com/google/go-github/v34 v34.0.0
 	github.com/mitchellh/go-homedir v1.1.0
