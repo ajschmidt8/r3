@@ -1,6 +1,17 @@
 # r3
 
-`r3` (_RAPIDS repo reviser_) is a CLI tool built with Golang that automates the process of making changes to all of the RAPIDS repos.
+`r3` (_RAPIDS repository reviser_) is a CLI tool built with Golang that automates the process of making changes to all of the RAPIDS repository.
+
+## Installation
+
+Download the latest binary from GitHub and add it to one of your `PATH` directories:
+
+```sh
+# wget https://github.com/ajschmidt8/r3/releases/latest/download/r3_macos -O r3
+wget https://github.com/ajschmidt8/r3/releases/latest/download/r3_linux -O r3
+chmod +x ./r3
+sudo mv ./r3 /usr/local/bin
+```
 
 ## Usage
 
@@ -10,35 +21,21 @@ First, create and enter an empty directory and run:
 r3 init
 ```
 
-This command will generate the following files:
+The first time any command is run, it will prompt you to authenticate with GitHub:
 
-- `scr.sh` - The shell script to be run in each repo
-- `config.yaml` - Some configuration settings (repo list, PR title, body, labels, etc.) to be used when committing the changes
+![](/doc/r3_init.png)
 
-Then, run the following command to execute your script in all of the repos listed in `config.yaml`:
+The `init` command will then generate the following files:
 
-```sh
-r3 run # runs scr.sh script on all repos in repos subdir
-r3 run --commit # commits changes from script
-r3 run --push # same as above, but also pushes branches after commit (implies --commit)
-r3 run --pr # same as above, but also opens PRs after commit (implies --push)
+- `scr.sh` - The shell script to be run in each repository
+- `config.yaml` - Some configuration settings (repository list, PR title, body, labels, etc.) to be used when committing the changes
 
-# use -i flag for interactive (as opposed the default -p for patch)
-# use -A flag for adding all changes without prompts
-```
+Now run `r3 run` in order to execute `scr.sh` in each repository that's listed in `config.yaml`. By default, `r3 run` will allow you to review all of your changes interactively using `git add -p`.
 
-Other available commands include:
+![](/doc/r3_run.png)
 
-```sh
-r3 clone
-r3 commit
-r3 pr
-r3 push
-```
+If the changes look correct, you can re-run the command again with the `--pr` flag (i.e. `r3 run --pr`) in order to open pull-requests in each repository. You can also use `r3 run -A --pr` to avoid being prompted to review the changes again.
+
+![](/doc/r3_run_pr.png)
 
 Use `r3 -h` or `r3 <command> -h` for more info and available flags
-
-## To Do:
-
-- [ ] Improve logging during clones
-- [ ] Unit tests
