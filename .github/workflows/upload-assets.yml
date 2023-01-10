@@ -17,10 +17,10 @@ jobs:
           - platform: macos
             GOOS: darwin
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
         with:
-          go-version: "1.16.3"
+          go-version: "1.19.4"
       - name: Build
         run: go build -ldflags="-X 'github.com/ajschmidt8/r3/cmd.VERSION=$VERSION'"
         env:
