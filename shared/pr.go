@@ -38,8 +38,10 @@ func PR(repoName string, repoOwner string, title string, draft bool, baseBranch 
 
 	time.Sleep(1 * time.Second)
 
-	_, _, err = client.Issues.AddLabelsToIssue(ctx, repoOwner, repoName, pr.GetNumber(), labels)
-	if err != nil {
-		color.New(color.FgRed, color.Bold).Printf("Error addings labels to \"%s\" PR: %v\n", repoName, err)
+	if len(labels) > 0 {
+		_, _, err = client.Issues.AddLabelsToIssue(ctx, repoOwner, repoName, pr.GetNumber(), labels)
+		if err != nil {
+			color.New(color.FgRed, color.Bold).Printf("Error addings labels to \"%s\" PR: %v\n", repoName, err)
+		}
 	}
 }
