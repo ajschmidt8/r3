@@ -42,9 +42,11 @@ func Clone(repoName string, baseBranchName string, headBranchName string) {
 	if !dirExists(repoDir) {
 		createFork(repoName)
 		gitRepo, err = git.PlainClone(repoDir, false, &git.CloneOptions{
-			ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", baseBranchName)),
-			URL:           fmt.Sprintf("git@github.com:rapidsai/%v.git", repoName),
-			RemoteName:    "upstream",
+			ReferenceName:     plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", baseBranchName)),
+			URL:               fmt.Sprintf("git@github.com:rapidsai/%v.git", repoName),
+			RemoteName:        "upstream",
+			Depth:             1,
+			RecurseSubmodules: git.NoRecurseSubmodules,
 		})
 		if err != nil {
 			log.Fatalf("could not clone %s: %v", repoName, err)
